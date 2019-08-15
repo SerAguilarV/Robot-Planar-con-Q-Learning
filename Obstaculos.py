@@ -7,7 +7,6 @@ from Trigonometria_Grados import sin,cos
 def CrearObstaculosCirculo(Puntos):
 
     repetirFig = int(input("\n\n¿Cuántos obstaculos habrá? : " ))
-
     plt.xlim([-2.5,2.5])
     plt.ylim([4.2,9.2])
     VXF = []
