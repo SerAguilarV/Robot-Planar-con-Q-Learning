@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from drawnow import drawnow
 import numpy as np
 
+
 def TrayectoriaPersonalizada():
     plt.xlim([-2.5,2.5])
     plt.ylim([4.2,9.2])

@@ -3,14 +3,13 @@ import sys
 import math
 from Trigonometria_Grados import sin,cos
 
-Add = 5
-Saltos = 5
-Regla = 19
-Acciones_Vec = [[Add,0,0],[-Add,0,0],[0,Add,0],[0,-Add,0],[0,0,Add],[0,0,-Add]]
-
 class Robot:
-    def __init__(self,L1=4,L2=3,L3=3,numeroPuntos = 0,Alpha = 0.8,Gamma = 0.8):
-        self.Q = np.zeros([numeroPuntos-1,Regla**3,6])/100
+    def __init__(self,L1=4,L2=3,L3=3,numeroPuntos = 0,Alpha = 0.8,Gamma = 0.8, Add = 5):
+        self.Add = Add
+        self.Saltos = Add
+        self.Regla = int(99/Add)
+        self.Acciones_Vec = [[Add,0,0],[-Add,0,0],[0,Add,0],[0,-Add,0],[0,0,Add],[0,0,-Add]]
+        self.Q = np.zeros([numeroPuntos-1,self.Regla**3,6])/100
         self.L1 = L1
         self.L2 = L2
         self.L3 = L3
@@ -57,7 +56,7 @@ class Robot:
         return     
 
     def Calcular_Estado(self):
-        return int((self.Angulos_Ant[0]/Saltos)+(self.Angulos_Ant[1]/Saltos)*Regla +(self.Angulos_Ant[2]/Saltos)*(Regla**2))
+        return int((self.Angulos_Ant[0]/self.Saltos)+(self.Angulos_Ant[1]/self.Saltos)*self.Regla +(self.Angulos_Ant[2]/self.Saltos)*(self.Regla**2))
         
     def Accion_Random(self,S,maxim):
         Indices = []
@@ -69,15 +68,15 @@ class Robot:
 
     def Ejecutar_Accion(self):
         for i in range(3):
-            self.Angulos[i] = self.Angulos[i] + Acciones_Vec[self.Accion][i]
-            if self.Angulos[i]>85 or self.Angulos[i]<5 :
+            self.Angulos[i] = self.Angulos[i] + self.Acciones_Vec[self.Accion][i]
+            if self.Angulos[i]>85 or self.Angulos[i]<5:
                 self.crash = True
         
     def Obtener_Estado_Siguiente(self):
         self.S_1 = self.Calcular_Estado2()
         
     def Calcular_Estado2(self):
-        return int((self.Angulos[0]/Saltos)+(self.Angulos[1]/Saltos)*Regla +(self.Angulos[2]/Saltos)*(Regla**2))
+        return int((self.Angulos[0]/self.Saltos)+(self.Angulos[1]/self.Saltos)*self.Regla +(self.Angulos[2]/self.Saltos)*(self.Regla**2))
         
     def Elegir_Accion_Siguiente(self):
         St1 = self.S_1
@@ -134,23 +133,8 @@ class Robot:
         a = self.Accion
         r = self.Reco
         Greddy = max(self.Q[self.tramo][self.S_1][:])
-# =============================================================================
-#         Val = np.zeros(1,dtype = np.float64)
-# =============================================================================
-# =============================================================================
-#         Val = self.Q[self.tramo][S][a].copy()
-# =============================================================================
+
         self.Q[self.tramo][S][a] = (1-self.Alpha) * self.Q[self.tramo][S][a] + self.Alpha*(r+self.Gamma*Greddy)
-# =============================================================================
-#         if Val == self.Q[self.tramo][S][a]:
-#             print('Murio')
-#             print(self.S)
-#             print(self.S_1)
-#             print(self.It)
-#             sys.exit()
-# =============================================================================
-        #if self.It%5000==0:
-            #self.Q=self.Q+np.ones([Regla**3,6])/20
         self.Angulos_Ant = self.Angulos.copy()
         self.It += 1
         
@@ -159,23 +143,7 @@ class Robot:
         a = self.Accion
         r = self.Reco
         Greddy = self.Q[self.tramo][self.S_1][self.Accion2]
-# =============================================================================
-#         Val = np.zeros(1,dtype = np.float64)
-# =============================================================================
-# =============================================================================
-#         Val = self.Q[self.tramo][S][a].copy()
-# =============================================================================
         self.Q[self.tramo][S][a] = self.Q[self.tramo][S][a]+self.Alpha*(r+self.Gamma*Greddy - self.Q[self.tramo][S][a])
-# =============================================================================
-#         if Val == self.Q[self.tramo][S][a]:
-#             print('Murio')
-#             print(self.S)
-#             print(self.S_1)
-#             print(self.It)
-#             sys.exit()
-# =============================================================================
-        #if self.It%5000==0:
-            #self.Q=self.Q+np.ones([Regla**3,6])/20
         A,B,C = self.Angulos
         self.Angulos_Ant = [A,B,C]
         A2 = self.Accion2
@@ -187,19 +155,7 @@ class Robot:
         a = self.Accion
         r = self.Reco
         Greddy = self.Q[self.tramo][self.S_1][self.Accion2]
-# =============================================================================
-#         Val = np.zeros(1,dtype = np.float64)
-#         Val = self.Q[self.tramo][S][a].copy()
-# =============================================================================
         self.Q[self.tramo][S][a] = self.Q[self.tramo][S][a]+self.Alpha*(r+self.Gamma*Greddy - self.Q[self.tramo][S][a])
-# =============================================================================
-#         if Val == self.Q[self.tramo][S][a]:
-#             print('Murio')
-#             print(self.S)
-#             print(self.S_1)
-#             print(self.It)
-#             sys.exit()
-# =============================================================================
         A,B,C = self.Angulos
         self.Angulos_Ant = [A,B,C]
         A2 = self.Accion2

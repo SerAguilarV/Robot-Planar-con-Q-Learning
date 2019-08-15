@@ -1,6 +1,5 @@
 import math
 
-
 def sin(grados):
     return math.sin(math.radians(grados))
 
